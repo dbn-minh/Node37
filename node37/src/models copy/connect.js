@@ -9,11 +9,12 @@
 // });
 
 import { Sequelize } from "sequelize";
+import config from "../config/config.js";
 
-const sequelize = new Sequelize("db_youtube", "root", "1234", {
-    host: "localhost",
-    port: "3440",//wtf ?????????
-    dialect: "mysql" // tên CSDL đang sử dụng
+const sequelize = new Sequelize(config.database, config.user, config.pass, {
+    host: config.host,
+    port: config.port,
+    dialect: config.dialect // tên CSDL đang sử dụng
 });
 
 export default sequelize;

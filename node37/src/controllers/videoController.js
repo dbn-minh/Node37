@@ -60,7 +60,9 @@ const getVideoType = async (req, res) => {
 
 const getVideo = async (req, res) => {
     try {
-        let data = await model.video.findAll();
+        let data = await model.video.findAll({
+            include: [model.users, "type"]
+        });
 
         responseData(res, "Get video success", data, 200);
     } catch (error) {
@@ -74,6 +76,7 @@ const createVideo = (req, res) => {
 
 const getVideoId = async (req, res) => {
     try {
+        // new Date()
         let { videoId } = req.params
 
         let dataPk = await model.video.findByPk(videoId)
@@ -84,8 +87,8 @@ const getVideoId = async (req, res) => {
             where: {
                 video_id: videoId
             },
-            include: ["user"] // get all data from the FK
-            // include: [model.users, "type"]
+            // include: ["user"] // get all data from the FK
+            include: [model.users, "type"]
         })
         responseData(res, "Get video id success", data, 200);
 
@@ -94,4 +97,21 @@ const getVideoId = async (req, res) => {
     }
 };
 
-export { getVideo, createVideo, getVideoId, getVideoType, getVideoByType, getVideoPage };
+const getCommentVideo = async (req, res) => {
+    try {
+        let { videoId } = req.params
+        let data = await model.video_comment.findAll({
+            where: {
+                video_id: videoId
+            },
+            include: "user"
+        })
+
+        responseData(res, "Get video comment success", data, 200);
+    } catch (error) {
+        responseData(res, "Get video comment fail", null, 500);
+    }
+};
+
+
+export { getVideo, createVideo, getVideoId, getVideoType, getVideoByType, getVideoPage, getCommentVideo };

@@ -77,4 +77,3 @@ export default class video extends Model {
   });
   }
 }
-
