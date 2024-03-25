@@ -23,11 +23,11 @@ const login = async (req, res) => {
       if (checkUser.pass_word == pass_word) {
         responseData(res, "Login success", "token", 200);
       } else {
-        responseData(res, "Wrong password", null, 400);
+        responseData(res, "Invalid password", null, 400);
       }
     } else {
       //doesn't exist => login fail
-      responseData(res, "Wrong email", null, 400);
+      responseData(res, "Invalid email", null, 400);
     }
   } catch (error) {
     responseData(res, "Login fail", null, 500);
@@ -53,7 +53,7 @@ const signUp = async (req, res) => {
 
     let newData = {
       full_name,
-      email: email,
+      email,
       pass_word, //còn gặp lại
       avatar: "",
       face_app_id: "",
@@ -70,4 +70,34 @@ const signUp = async (req, res) => {
   }
 };
 
-export { login, signUp };
+const loginFacebook = async (req, res) => {
+  try {
+    let { faceAppId, full_name } = req.body
+
+    //check  Facebook app id
+    let checkUser = await model.users.findOne({
+      where: {
+        face_app_id: faceAppId,
+      },
+    });
+
+    // if exited => login 
+    if (!checkUser) {
+      let newData = {
+        full_name,
+        email: "",
+        pass_word: "", //còn gặp lại
+        avatar: "",
+        face_app_id: faceAppId,
+        role: "user",
+      };
+      await model.users.create(newData);
+    }
+    responseData(res, "Login Facebook success", "token", 200);
+
+  } catch (error) {
+    responseData(res, "Login Facebook fail", null, 500);
+  }
+}
+
+export { login, signUp, loginFacebook };

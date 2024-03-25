@@ -67,3 +67,8 @@ export const loginAPI = async (model) => {
   const { data } = await axios.post(`${BASE_URL}/auth/login`, model);
   return data;
 };
+
+export const loginFacebookAPI = async (model) => {
+  const { data } = await axios.post(`${BASE_URL}/auth/login-facebook`, model);
+  return data;
+};

@@ -2,7 +2,7 @@
 //authorization
 
 import express from "express";
-import { login, signUp } from "../controllers/authController.js";
+import { login, signUp, loginFacebook } from "../controllers/authController.js";
 
 const authRoute = express.Router()
 
@@ -11,5 +11,8 @@ authRoute.post('/login', login)
 
 //signup
 authRoute.post('/signup', signUp)
+
+//login Facebook
+authRoute.post("/login-facebook", loginFacebook)
 
 export default authRoute
