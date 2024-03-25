@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Box, CardMedia } from "@mui/material";
+import ReactFacebookLogin from "react-facebook-login";
 
 import { Videos, ChannelCard } from ".";
-
-
+import { loginAPI } from "../utils/fetchFromAPI";
 
 const Login = () => {
   const [channelDetail, setChannelDetail] = useState();
@@ -12,29 +12,56 @@ const Login = () => {
 
   const { id } = useParams();
 
-  useEffect(() => {
+  useEffect(() => {}, []);
 
-  }, []);
+  return (
+    <div className="p-5 " style={{ minHeight: "100vh" }}>
+      <div className=" d-flex justify-content-center">
+        <form className="row g-3 text-white">
+          <div className="col-md-12">
+            <label htmlFor="inputEmail4" className="form-label">
+              Email
+            </label>
+            <input type="email" className="form-control" id="email" />
+          </div>
 
-  return <div className="p-5 " style={{ minHeight: "100vh" }}>
-    <div className=" d-flex justify-content-center">
-      <form className="row g-3 text-white">
-        <div className="col-md-12">
-          <label htmlFor="inputEmail4" className="form-label">Email</label>
-          <input type="email" className="form-control" id="email" />
-        </div>
+          <div className="col-md-12">
+            <label htmlFor="inputEmail4" className="form-label">
+              Password
+            </label>
+            <input className="form-control" id="pass" />
+          </div>
+          <div className="col-12">
+            <button
+              type="button"
+              className="btn btn-primary"
+              onClick={() => {
+                let email = document.querySelector("#email").value;
+                let pass_word = document.querySelector("#pass").value;
 
-        <div className="col-md-12">
-          <label htmlFor="inputEmail4" className="form-label">Password</label>
-          <input className="form-control" id="pass" />
-        </div>
-        <div className="col-12">
-          <button type="button" className="btn btn-primary" >Login</button>
-         
-        </div>
-      </form>
+                loginAPI({ email, pass_word })
+                  .then((result) => {
+                    alert(result.message);
+                    // save Token
+                  })
+                  .catch((error) => {
+                    alert(error.response.data.message);
+                  });
+              }}
+            >
+              Login
+            </button>
+          </div>
+          <ReactFacebookLogin
+            appId="750205713534041"
+            callback={(response) => {
+              console.log(response);
+            }}
+          />
+        </form>
+      </div>
     </div>
-  </div>
+  );
 };
 
 export default Login;
