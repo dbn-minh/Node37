@@ -2,6 +2,8 @@ import { responseData } from "../config/response.js";
 import initModels from "../models/init-models.js";
 import sequelize from "../models/connect.js";
 
+import bcrypt from "bcrypt";
+
 let model = initModels(sequelize);
 
 const login = async (req, res) => {
@@ -20,7 +22,8 @@ const login = async (req, res) => {
 
     // exist => login success
     if (checkUser) {
-      if (checkUser.pass_word == pass_word) {
+      if (bcrypt.compareSync(pass_word, checkUser.pass_word)) {
+        let token = "";
         responseData(res, "Login success", "token", 200);
       } else {
         responseData(res, "Invalid password", null, 400);
@@ -54,7 +57,7 @@ const signUp = async (req, res) => {
     let newData = {
       full_name,
       email,
-      pass_word, //còn gặp lại
+      pass_word: bcrypt.hashSync(pass_word, 10), //còn gặp lại
       avatar: "",
       face_app_id: "",
       role: "user",
@@ -72,7 +75,7 @@ const signUp = async (req, res) => {
 
 const loginFacebook = async (req, res) => {
   try {
-    let { faceAppId, full_name } = req.body
+    let { faceAppId, full_name } = req.body;
 
     //check  Facebook app id
     let checkUser = await model.users.findOne({
@@ -81,7 +84,7 @@ const loginFacebook = async (req, res) => {
       },
     });
 
-    // if exited => login 
+    // if exited => login
     if (!checkUser) {
       let newData = {
         full_name,
@@ -94,10 +97,9 @@ const loginFacebook = async (req, res) => {
       await model.users.create(newData);
     }
     responseData(res, "Login Facebook success", "token", 200);
-
   } catch (error) {
     responseData(res, "Login Facebook fail", null, 500);
   }
-}
+};
 
 export { login, signUp, loginFacebook };
