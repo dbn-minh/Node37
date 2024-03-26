@@ -3,6 +3,7 @@ import initModels from "../models/init-models.js";
 import sequelize from "../models/connect.js";
 
 import bcrypt from "bcrypt";
+import { createToken } from "../config/jwt.js";
 
 let model = initModels(sequelize);
 
@@ -20,11 +21,14 @@ const login = async (req, res) => {
       },
     });
 
+
     // exist => login success
     if (checkUser) {
       if (bcrypt.compareSync(pass_word, checkUser.pass_word)) {
-        let token = "";
-        responseData(res, "Login success", "token", 200);
+
+        let token = createToken({ user_id: checkUser.user_id });
+
+        responseData(res, "Login success", token, 200);
       } else {
         responseData(res, "Invalid password", null, 400);
       }

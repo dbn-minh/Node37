@@ -6,7 +6,8 @@ import {
     getVideoType,
     getVideoByType,
     getVideoPage,
-    getCommentVideo
+    getCommentVideo,
+    commentVideo
 } from "../controllers/videoController.js";
 
 const videoRoute = express.Router();
@@ -29,5 +30,8 @@ videoRoute.get('/get-video-page/:page', getVideoPage)
 
 // API get comment video
 videoRoute.get('/get-comment-video/:videoId', getCommentVideo)
+
+// API comment video
+videoRoute.post('/comment-video', commentVideo)
 
 export default videoRoute;

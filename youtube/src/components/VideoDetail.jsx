@@ -151,6 +151,7 @@ const VideoDetail = () => {
                                                     height={40}
                                                 />
                                                 <div className="form-outline w-100">
+                                                    {/* text area comment */}
                                                     <textarea
                                                         className="form-control text-white"
                                                         id="textAreaExample"
@@ -169,6 +170,7 @@ const VideoDetail = () => {
                                                 </div>
                                             </div>
                                             <div className="float-end mt-2 pt-1">
+                                                {/* Comment button */}
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-light btn-sm me-3"

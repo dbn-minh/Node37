@@ -49,6 +49,11 @@ const Login = () => {
                                     .then((result) => {
                                         alert(result.message);
                                         // save Token
+                                        localStorage.setItem(
+                                            "LOGIN_USER",
+                                            result.content
+                                        );
+                                        window.location.reload();
                                     })
                                     .catch((error) => {
                                         alert(error.response.data.message);

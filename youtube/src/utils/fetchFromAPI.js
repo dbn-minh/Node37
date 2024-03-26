@@ -9,7 +9,7 @@ const options = {
   headers: {
     "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
     "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
-    // 'token': localStorage.getItem("LOGIN_USER")
+    'token': localStorage.getItem("LOGIN_USER")
   },
 };
 
@@ -20,13 +20,13 @@ export const fetchFromAPI = async (url) => {
 };
 
 export const getVideoAPI = async () => {
-  const { data } = await axios.get(`${BASE_URL}/video/get-video`);
+  const { data } = await axios.get(`${BASE_URL}/video/get-video`, options);
 
   return data.content;
 };
 
 export const getVideoTypeAPI = async () => {
-  const { data } = await axios.get(`${BASE_URL}/video/get-video-type`);
+  const { data } = await axios.get(`${BASE_URL}/video/get-video-type`, options);
 
   return data.content;
 };
@@ -59,16 +59,21 @@ export const getCommentVideoId = async (videoId) => {
 };
 
 export const signUpAPI = async (model) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/signup`, model);
+  const { data } = await axios.post(`${BASE_URL}/auth/signup`, model, options);
   return data;
 };
 
 export const loginAPI = async (model) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/login`, model);
+  const { data } = await axios.post(`${BASE_URL}/auth/login`, model, options);
   return data;
 };
 
 export const loginFacebookAPI = async (model) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/login-facebook`, model);
+  const { data } = await axios.post(`${BASE_URL}/auth/login-facebook`, model, options);
+  return data;
+};
+
+export const commentAPI = async (model) => {
+  const { data } = await axios.post(`${BASE_URL}/video/comment-video`, model, options);
   return data;
 };
