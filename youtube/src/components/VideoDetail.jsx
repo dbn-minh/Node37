@@ -6,6 +6,7 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 import { Videos, Loader } from "./";
 import {
+    commentAPI,
     getCommentVideoId,
     getVideoAPI,
     getVideoId,
@@ -174,6 +175,34 @@ const VideoDetail = () => {
                                                 <button
                                                     type="button"
                                                     className="btn btn-outline-light btn-sm me-3"
+                                                    onClick={() => {
+                                                        let model = {
+                                                            video_id: id,
+                                                            content:
+                                                                document.querySelector(
+                                                                    "#ctextAreaExample"
+                                                                ).value,
+                                                        };
+                                                        commentAPI(model)
+                                                            .then((result) => {
+                                                                getCommentVideoId(
+                                                                    id
+                                                                )
+                                                                    .then(
+                                                                        (
+                                                                            result
+                                                                        ) => {
+                                                                            setComments(
+                                                                                result
+                                                                            );
+                                                                        }
+                                                                    )
+                                                                    .catch();
+                                                            })
+                                                            .catch(
+                                                                (error) => {}
+                                                            );
+                                                    }}
                                                 >
                                                     Post comment
                                                 </button>
