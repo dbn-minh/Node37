@@ -1,13 +1,5 @@
 // khai báo chuỗi kết nối CSDL
 
-// const connect = mysql.createConnection({
-//     host: "localhost",
-//     user: "root",
-//     password: "1234",
-//     port: "3306",
-//     database: "db_youtube"
-// });
-
 import { Sequelize } from "sequelize";
 import config from "../config/config.js";
 

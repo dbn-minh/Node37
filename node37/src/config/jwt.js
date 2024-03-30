@@ -1,24 +1,47 @@
 // yarn add jsonwebtoken
-// 1. mã hoá dữ liệu
+// 1. mã hóa dữ liệu
 // 2. kiểm tra token hợp lệ
-// 3. Giải token
+// 3. giải token
 
-import jwt from "jsonwebtoken"
+import jwt from "jsonwebtoken";
 
+export const createToken = (data) => {
+  let token = jwt.sign({ data }, "BIMAT", {
+    algorithm: "HS256",
+    expiresIn: "10m",
+  });
 
-//Tim hieu them ve Token nha Minh
-const createToken = (data) => {
-    let token = jwt.sign({ data }, "BIMAT", { algorithm: "HS256" })
-    // hàm sign này nhận được 3 kiểu dữ liệu: buffer, chuỗi, object
-    return token
-}
+  return token;
+};
 
-const checkToken = () => {
+export const checkToken = (token) =>
+  jwt.verify(token, "BIMAT", (error, decoded) => error);
 
-}
+export const createRefToken = (data) => {
+  let token = jwt.sign({ data }, "KO_BIMAT", {
+    algorithm: "HS256",
+    expiresIn: "7d",
+  });
+  return token;
+};
 
-const decodeToken = (token) => {
-    return jwt.decode(token)
-}
+export const checkRefToken = (token) =>
+  jwt.verify(token, "KO_BIMAT", (error, decoded) => error);
 
-export { createToken, checkToken, decodeToken }
+export const decodeToken = (token) => {
+  return jwt.decode(token);
+};
+
+export const verifyToken = (req, res, next) => {
+  let { token } = req.headers;
+
+  let check = checkToken(token);
+
+  if (check == null) {
+    // check token hợp lệ
+    next();
+  } else {
+    // token không hợp lệ
+    res.status(401).send(check.name);
+  }
+};

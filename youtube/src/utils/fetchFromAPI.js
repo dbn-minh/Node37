@@ -9,7 +9,7 @@ const options = {
   headers: {
     "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
     "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
-    'token': localStorage.getItem("LOGIN_USER")
+    token: localStorage.getItem("LOGIN_USER"),
   },
 };
 
@@ -19,6 +19,7 @@ export const fetchFromAPI = async (url) => {
   return data;
 };
 
+// Khoá token => 401: token expired => API reset token => localstore: token => reload()
 export const getVideoAPI = async () => {
   const { data } = await axios.get(`${BASE_URL}/video/get-video`, options);
 
@@ -27,53 +28,84 @@ export const getVideoAPI = async () => {
 
 export const getVideoTypeAPI = async () => {
   const { data } = await axios.get(`${BASE_URL}/video/get-video-type`, options);
-
   return data.content;
 };
 
 export const getVideoByTypeAPI = async (typeId) => {
   const { data } = await axios.get(
-    `${BASE_URL}/video/get-video-by-type/${typeId}`
+    `${BASE_URL}/video/get-video-by-type/${typeId}`,
+    options
+  );
+  return data.content;
+};
+
+// Khoá token => 401
+export const getVideoId = async (videoId) => {
+  const { data } = await axios.get(
+    `${BASE_URL}/video/get-video-id/${videoId}`,
+    options
   );
 
-  return data.content;
-};
-
-export const getVideoPageAPI = async (page = 1) => {
-  const { data } = await axios.get(`${BASE_URL}/video/get-video-page/${page}`);
-
-  // {data, totalPage}
-  return data.content;
-};
-
-export const getVideoId = async (videoId) => {
-  const { data } = await axios.get(`${BASE_URL}/video/get-video-id/${videoId}`);
   return data.content;
 };
 
 export const getCommentVideoId = async (videoId) => {
   const { data } = await axios.get(
-    `${BASE_URL}/video/get-comment-video/${videoId}`
+    `${BASE_URL}/video/get-comment-video/${videoId}`,
+    options
   );
+
   return data.content;
 };
 
 export const signUpAPI = async (model) => {
   const { data } = await axios.post(`${BASE_URL}/auth/signup`, model, options);
+
   return data;
 };
 
 export const loginAPI = async (model) => {
   const { data } = await axios.post(`${BASE_URL}/auth/login`, model, options);
+
   return data;
 };
 
 export const loginFacebookAPI = async (model) => {
-  const { data } = await axios.post(`${BASE_URL}/auth/login-facebook`, model, options);
+  const { data } = await axios.post(
+    `${BASE_URL}/auth/login-facebook`,
+    model,
+    options
+  );
+
   return data;
 };
 
 export const commentAPI = async (model) => {
-  const { data } = await axios.post(`${BASE_URL}/video/comment-video`, model, options);
+  const { data } = await axios.post(
+    `${BASE_URL}/video/comment-video`,
+    model,
+    options
+  );
+
   return data;
 };
+
+// Khoá token => 401: token expired => API reset token => localstore: token => reload()
+export const getVideoPageAPI = async (page = 1) => {
+  const { data } = await axios.get(
+    `${BASE_URL}/video/get-video-page/${page}`,
+    options
+  );
+  return data.content; // { data, totalPage}
+};
+
+// interceptor => middleware khi nhận response từ BE về
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    console.log(error.response.data);
+    if (error.response.data == "TokenExpiredError") {
+      // call API refresh
+    }
+  }
+);

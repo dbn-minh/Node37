@@ -1,47 +1,54 @@
-import { responseData } from "../config/response.js";
+import { responseData } from "../config/Response.js";
 import initModels from "../models/init-models.js";
 import sequelize from "../models/connect.js";
 
 import bcrypt from "bcrypt";
-import { createToken } from "../config/jwt.js";
+import { createRefToken, createToken, decodeToken } from "../config/jwt.js";
 
 let model = initModels(sequelize);
 
-const login = async (req, res) => {
-  try {
-    let { email, pass_word } = req.body;
+export const login = async (req, res) => {
+  // try {
+  let { email, pass_word } = req.body;
 
-    //Check email and password = table user
-    // SELECT * FROM users WHERE email=email, pass_word=pass_word
-    // if (email==email && pass_word==pass_word)
+  // check email và pass_word == table user
+  // SELECT * FROM users WHERE email=email AND pass_word= pass_word
+  // if(email==email && pass_word==pass_word)
+  let checkUser = await model.users.findOne({
+    where: {
+      email: email,
+    },
+  });
 
-    let checkUser = await model.users.findOne({
-      where: {
-        email,
-      },
-    });
+  // tồn tại => login thành công
+  if (checkUser) {
+    if (bcrypt.compareSync(pass_word, checkUser.pass_word)) {
+      let token = createToken({ user_id: checkUser.user_id });
+      // Khởi tạo refresh token
+      let refToken = createRefToken({ user_id: checkUser.user_id });
 
+      // save refreshToken vao Table User
+      // UPDATE users SET ... WHERE ...
+      await model.users.update(
+        { ...checkUser.dataValues, refresh_token: refToken },
+        { where: { user_id: checkUser.user_id } }
+      );
 
-    // exist => login success
-    if (checkUser) {
-      if (bcrypt.compareSync(pass_word, checkUser.pass_word)) {
-
-        let token = createToken({ user_id: checkUser.user_id });
-
-        responseData(res, "Login success", token, 200);
-      } else {
-        responseData(res, "Invalid password", null, 400);
-      }
+      responseData(res, "Login thành công", token, 200);
     } else {
-      //doesn't exist => login fail
-      responseData(res, "Invalid email", null, 400);
+      responseData(res, "Mật khẩu không đúng", "", 400);
     }
-  } catch (error) {
-    responseData(res, "Login fail", null, 500);
+  } else {
+    // ko tồn tại => sai email hoặc pass
+    responseData(res, "Email không đúng", "", 400);
   }
+
+  // } catch {
+  //     responseData(res, "Lỗi ...", "", 500);
+  // }
 };
 
-const signUp = async (req, res) => {
+export const signUp = async (req, res) => {
   try {
     let { full_name, email, pass_word } = req.body;
 
@@ -51,59 +58,80 @@ const signUp = async (req, res) => {
       },
     });
 
-    //Check trùng email
+    // check trùng email
     if (checkUser) {
-      // res.status(400).send("Email đã tồn tại")
-      responseData(res, "Email existed", null, 400);
+      // res.status(400).send("Email đã tồn tại");
+      responseData(res, "Email đã tồn tại", "", 400);
       return;
     }
 
     let newData = {
       full_name,
       email,
-      pass_word: bcrypt.hashSync(pass_word, 10), //còn gặp lại
+      pass_word: bcrypt.hashSync(pass_word, 10), // còn gặp lại
       avatar: "",
       face_app_id: "",
       role: "user",
     };
 
-    //Create => thêm mới users
-    //INSERT INTO VALUES
+    // Create => thêm mới users
+    // INSERT INTO VALUES
     await model.users.create(newData);
 
-    responseData(res, "Signup success", null, 200);
-  } catch (error) {
-    responseData(res, "Signup fail", null, 500);
+    responseData(res, "Đăng ký thành công", "", 200);
+  } catch {
+    responseData(res, "Lỗi ...", "", 500);
   }
 };
 
-const loginFacebook = async (req, res) => {
+export const loginFacebook = async (req, res) => {
   try {
-    let { faceAppId, full_name } = req.body;
+    let { full_name, faceAppId } = req.body;
 
-    //check  Facebook app id
+    // kiểm tra facebook app id
     let checkUser = await model.users.findOne({
       where: {
         face_app_id: faceAppId,
       },
     });
 
-    // if exited => login
+    // nếu đã tồn tại => login
     if (!checkUser) {
+      // nếu chưa tồn tại => thêm user => login
       let newData = {
-        full_name,
+        full_name: full_name,
         email: "",
-        pass_word: "", //còn gặp lại
+        pass_word: "", // còn gặp lại
         avatar: "",
         face_app_id: faceAppId,
         role: "user",
       };
       await model.users.create(newData);
     }
-    responseData(res, "Login Facebook success", "token", 200);
-  } catch (error) {
-    responseData(res, "Login Facebook fail", null, 500);
+
+    responseData(res, "Login thành công", "token", 200);
+  } catch {
+    responseData(res, "Lỗi ...", "", 500);
   }
 };
 
-export { login, signUp, loginFacebook };
+export const tokenRef = async (req, res) => {
+  try {
+    let token = req.headers;
+    // {data: {user_id: }}
+    let decodeToken = decodeToken(token);
+
+    // Lấy thông tin user trong database
+    let getUser = await model.users.findOne({
+      where: {
+        user_id: decodeToken.data.user_id,
+      },
+    });
+
+    console.log(getUser);
+
+    responseData(res, "Login thành công", "token", 200);
+  } catch {
+    responseData(res, "Lỗi ...", "", 500);
+  }
+};

@@ -1,7 +1,7 @@
 export const responseData = (res, message, data, statusCode) => {
-    return res.status(statusCode).send({
+    res.status(statusCode).json({
         message: message,
         content: data,
-        date: new Date(),
+        date: new Date()
     });
-};
+}

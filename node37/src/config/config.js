@@ -1,10 +1,8 @@
-//yarn add dotenv
-//lưu trữ các giá trị ít khi thay đổi và bảo mật
-// .env nằm trong .gitignore
-
-import dotenv from 'dotenv'
-dotenv.config()
-
+// yarn add dotenv
+// chỉ lưu các giá trị ít khi thay đổi và các các giá trị bảo mật
+// file nay nó nắm trong .gitignore
+import dotenv from 'dotenv';
+dotenv.config();
 
 export default {
     database: process.env.DB_DATABASE,
@@ -12,5 +10,5 @@ export default {
     pass: process.env.DB_PASS,
     host: process.env.DB_HOST,
     port: process.env.DB_PORT,
-    dialect: process.env.DB_DIALECT,
+    dialect: process.env.DB_DIALECT
 }
