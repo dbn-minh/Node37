@@ -1,5 +1,5 @@
 import { Avatar, Stack } from "@mui/material";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { logo } from "../utils/constants";
 import { ChannelCard, SearchBar } from "./";
@@ -8,7 +8,7 @@ import { ChannelCard, SearchBar } from "./";
 const Navbar = () => {
 
   let userLogin = localStorage.getItem("LOGIN_USER")
-
+  let navigate = useNavigate();
   return (
     <Stack direction="row" alignItems="center" p={2} sx={{ background: '#000', top: 0, justifyContent: "space-between" }}>
       <Link to="/" style={{ display: "flex", alignItems: "center" }}>
@@ -36,8 +36,11 @@ const Navbar = () => {
             <li><a className="dropdown-item" href="#"
 
               onClick={() => {
-                  localStorage.removeItem("LOGIN_USER")
-                  window.location.reload();
+                // logout => API Logout
+
+                localStorage.removeItem("LOGIN_USER")
+
+                navigate("/login")
               }}>Đăng xuất</a></li>
           </ul>
         </div>

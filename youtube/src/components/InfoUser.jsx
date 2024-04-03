@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Box, CardMedia } from "@mui/material";
 
 import { Videos, ChannelCard } from ".";
 
 import ReactPlayer from "react-player";
 import { DOMAIN_BE_IMG } from "../utils/constants";
+import { getInfo, updateInfo } from "../utils/fetchFromAPI";
 
 const InfoUser = () => {
   const [channelDetail, setChannelDetail] = useState();
@@ -14,10 +15,22 @@ const InfoUser = () => {
   const [avatar, setAvatar] = useState("http://dergipark.org.tr/assets/app/images/buddy_sample.png");
 
   const { id } = useParams();
+  const [info, setInfo] = useState(null);
+
+  let userInfo = localStorage.getItem("LOGIN_USER")
+  let navigate = useNavigate();
+
 
   useEffect(() => {
+    if (!userInfo) {
+      navigate("/login");
+      return;
+    }
 
-  }, []);
+    getInfo().then(result => {
+      setInfo(result)
+    })
+  }, [id]);
 
   return <div className="p-5" style={{ minHeight: "95vh" }}>
 
@@ -42,20 +55,31 @@ const InfoUser = () => {
             <form className="row g-3 text-white">
               <div className="col-md-6">
                 <label htmlFor="inputEmail4" className="form-label">Full name</label>
-                <input type="fullName" className="form-control" id="inputFullName" />
+                <input type="fullName" className="form-control" id="inputFullName" defaultValue={info && info.full_name} />
               </div>
               <div className="col-md-6">
                 <label htmlFor="inputEmail4" className="form-label">Email</label>
-                <input type="email" className="form-control" id="inputEmail" />
+                <input type="email" className="form-control" id="inputEmail" defaultValue={info && info.email} />
               </div>
               <div className="col-md-6">
                 <label htmlFor="inputPassword4" className="form-label">Password</label>
-                <input type="password" className="form-control" id="inputPassword" />
+                <input className="form-control" id="inputPassword"
+                  defaultValue={info && info.pass_word} />
               </div>
 
 
               <div className="col-12">
-                <button type="button" className="btn btn-primary" >Update</button>
+                <button type="button" className="btn btn-primary"
+                  onClick={() => {
+
+                    const full_name = document.querySelector("#inputFullName").value;
+                    const pass_word = document.querySelector("#inputPassword").value;
+                    updateInfo({ full_name, pass_word }).then(result => {
+
+                      alert(result);
+
+                    })
+                  }} >Update</button>
               </div>
             </form>
 

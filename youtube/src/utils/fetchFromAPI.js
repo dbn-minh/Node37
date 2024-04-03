@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const BASE_URL = "http://localhost:8181";
+export const BASE_URL_IMG = "http://localhost:8181/public/imgs/";
 
 const options = {
   params: {
@@ -19,7 +20,7 @@ export const fetchFromAPI = async (url) => {
   return data;
 };
 
-// Khoá token => 401: token expired => API reset token => localstore: token => reload()
+// khóa token => 401: token expired => API reset token => localstore: token => reload()
 export const getVideoAPI = async () => {
   const { data } = await axios.get(`${BASE_URL}/video/get-video`, options);
 
@@ -39,7 +40,7 @@ export const getVideoByTypeAPI = async (typeId) => {
   return data.content;
 };
 
-// Khoá token => 401
+// khóa token => 401
 export const getVideoId = async (videoId) => {
   const { data } = await axios.get(
     `${BASE_URL}/video/get-video-id/${videoId}`,
@@ -90,13 +91,30 @@ export const commentAPI = async (model) => {
   return data;
 };
 
-// Khoá token => 401: token expired => API reset token => localstore: token => reload()
+// khóa token => 401: token expired => API reset token => localstore: token => reload()
 export const getVideoPageAPI = async (page = 1) => {
   const { data } = await axios.get(
     `${BASE_URL}/video/get-video-page/${page}`,
     options
   );
+
   return data.content; // { data, totalPage}
+};
+
+export const getInfo = async () => {
+  const { data } = await axios.get(`${BASE_URL}/user/get-info`, options);
+
+  return data.content;
+};
+
+export const updateInfo = async (model) => {
+  const { data } = await axios.put(
+    `${BASE_URL}/user/update-info`,
+    model,
+    options
+  );
+
+  return data.message;
 };
 
 // interceptor => middleware khi nhận response từ BE về
@@ -106,6 +124,20 @@ axios.interceptors.response.use(
     console.log(error.response.data);
     if (error.response.data == "TokenExpiredError") {
       // call API refresh
+      axios
+        .post(`${BASE_URL}/auth/token-ref`, "", options)
+        .then((result) => {
+          console.log(result.data.content);
+          localStorage.setItem("LOGIN_USER", result.data.content);
+
+          window.location.reload();
+        })
+        .catch((error) => {
+          // logout => API Logout
+
+          // xóa localstore
+          localStorage.removeItem("LOGIN_USER");
+        });
     }
   }
 );
