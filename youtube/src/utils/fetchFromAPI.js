@@ -117,6 +117,16 @@ export const updateInfo = async (model) => {
   return data.message;
 };
 
+export const uploadAvatar = async (formData) => {
+  const { data } = await axios.post(
+    `${BASE_URL}/user/upload-avatar`,
+    formData,
+    options
+  );
+
+  return data;
+};
+
 // interceptor => middleware khi nhận response từ BE về
 axios.interceptors.response.use(
   (response) => response,

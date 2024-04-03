@@ -74,3 +74,49 @@ export const updateInfo = async (req, res) => {
     responseData(res, "Lỗi ...", "", 500);
   }
 };
+
+// FS => File System
+import fs from "fs";
+
+export const uploadAvatar = async (req, res) => {
+  //form-data
+  let { file } = req;
+  let { token } = req.headers;
+  let accessToken = decodeToken(token);
+  let { user_id } = accessToken.data;
+
+  let getUser = await model.users.findOne({
+    where: {
+      user_id,
+    },
+  });
+
+  getUser.avatar = file.filename;
+  await model.users.update(getUser.dataValues, {
+    where: {
+      user_id,
+    },
+  });
+
+  res.send(file.filename);
+
+  //tạo file -> data.txt: node 37
+  // fs.readFile(process.cwd() + "/public/imgs/" + file.filename, (err, data) => {
+  //   //
+  //   // let newName =
+  //   //   "data:image/jpeg;base64," + Buffer.from(data).toString("base64");
+  //   let newName = `data:${file.mimetype}; base64, ${Buffer.from(data).toString(
+  //     "base64"
+  //   )}`;
+  //   res.send(newName);
+  //   return;
+  // });
+
+  // fs.writeFile(process.cwd() + "/public/file/data.txt", "node37", () => {});
+  // fs.rename();
+  // fs.copyFile();
+  // fs.unlink();
+
+  //  /public/img/${file.filename}
+  // res.send(file);
+};
