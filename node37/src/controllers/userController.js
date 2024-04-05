@@ -77,10 +77,32 @@ export const updateInfo = async (req, res) => {
 
 // FS => File System
 import fs from "fs";
-
+import compress_images from "compress-images";
+// yarn add gifsicle@5.2.1 pngquant-bin@6.0.1
 export const uploadAvatar = async (req, res) => {
   //form-data
   let { file } = req;
+
+  // Tối ưu hình, > 500KB mới nên tối ưu
+  compress_images(
+    process.cwd() + "/public/imgs/" + file.filename,
+    process.cwd() + "/public/video/",
+    { compress_force: false, statistic: true, autoupdate: true },
+    false,
+    { jpg: { engine: "mozjpeg", command: ["-quality", "25"] } },
+    { png: { engine: "pngquant", command: ["--quality=20-50", "-o"] } },
+    { svg: { engine: "svgo", command: "--multipass" } },
+    {
+      gif: { engine: "gifsicle", command: ["--colors", "64", "--use-col=web"] },
+    },
+    function (error, completed, statistic) {
+      // xóa tấm hình chưa tối ưu
+    }
+  );
+
+  //
+  let { hoTen, email } = req.body;
+
   let { token } = req.headers;
   let accessToken = decodeToken(token);
   let { user_id } = accessToken.data;

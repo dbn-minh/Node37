@@ -11,6 +11,7 @@ const options = {
     "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
     "X-RapidAPI-Host": "youtube-v31.p.rapidapi.com",
     token: localStorage.getItem("LOGIN_USER"),
+    // "content-type": "multipart/form-data",
   },
 };
 
@@ -122,6 +123,15 @@ export const uploadAvatar = async (formData) => {
     `${BASE_URL}/user/upload-avatar`,
     formData,
     options
+  );
+
+  return data;
+};
+
+export const uploadDinary = async (formData) => {
+  const { data } = await axios.post(
+    "https://api.cloudinary.com/v1_1/djeuacmgv/img/upload", // Không link được api
+    formData
   );
 
   return data;

@@ -6,7 +6,13 @@ import { Videos, ChannelCard } from ".";
 
 import ReactPlayer from "react-player";
 import { DOMAIN_BE_IMG } from "../utils/constants";
-import { getInfo, updateInfo } from "../utils/fetchFromAPI";
+import {
+  BASE_URL_IMG,
+  getInfo,
+  updateInfo,
+  uploadAvatar,
+  uploadDinary,
+} from "../utils/fetchFromAPI";
 
 const InfoUser = () => {
   const [channelDetail, setChannelDetail] = useState();
@@ -85,8 +91,28 @@ const InfoUser = () => {
                   let fileC2 = document.querySelector("#formFile").files[0];
                   console.log(fileC2);
 
-                  let formData = new FormData(); //dang o day
+                  // let formDataJson = {
+                  //   avatar: file,
+                  //   hoTen: "",
+                  //   email: "",
+                  // };
+
+                  let formData = new FormData();
                   formData.append("avatar", file);
+                  // formData.append("upload_preset", "ddwzikxx");
+                  // formData.append("hoTen", "abc");
+                  // formData.append("email", "abc@gmail.com");
+                  // uploadDinary(formData)
+                  //   .then((result) => {
+                  //     console.log(result);
+                  //   })
+                  //   .catch((error) => {
+                  //     console.log(error);
+                  //   });
+
+                  uploadAvatar(formData).then((result) => {
+                    setAvatar(BASE_URL_IMG + result);
+                  });
                 }}
               />
             </div>
