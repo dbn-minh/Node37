@@ -37,11 +37,9 @@ app.use("/swagger", swaggerUi.serve, swaggerUi.setup(specs));
 // setup prisma
 // 1/ yarn add prisma @prisma/client
 // 2/ yarn prisma init
+// 3/ cập nhật lại chuỗi kết nối db trong .env và tên hệ CSDL đang sử dụng trong schema.prisma
 
-// 1. Set the DATA.BASE_URL in the .env file to point to your existing database.
-//    If your database has no tables yet, read https://pris.ly/d/getting-started
-// 2. Set the provider of the datasource block in schema.prisma to match your database:
-//    postgresql, mysql, sqlite, sqlserver, mongodb or cockroachdb.
 // 3. Run yarn prisma db pull to turn your database schema into a Prisma schema.
-// 4. Run yarn prisma generate to generate the Prisma Client. You can then start quer
-//    ing your database
+
+// 4. Run yarn prisma generate để cập nhật model trong @prisma/client
+//  yarn prisma migrate dev -> backup database nhưng xóa hết dữ liệu

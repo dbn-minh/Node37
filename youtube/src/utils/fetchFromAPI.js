@@ -128,14 +128,14 @@ export const uploadAvatar = async (formData) => {
   return data;
 };
 
-export const uploadDinary = async (formData) => {
-  const { data } = await axios.post(
-    "https://api.cloudinary.com/v1_1/djeuacmgv/img/upload", // Không link được api
-    formData
-  );
+// export const uploadDinary = async (formData) => {
+//   const { data } = await axios.post(
+//     "https://api.cloudinary.com/v1_1/djeuacmgv/img/upload", // Không link được api
+//     formData
+//   );
 
-  return data;
-};
+//   return data;
+// };
 
 // interceptor => middleware khi nhận response từ BE về
 axios.interceptors.response.use(
