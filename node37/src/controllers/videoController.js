@@ -16,15 +16,20 @@ import { PrismaClient } from "@prisma/client";
 let prisma = new PrismaClient();
 
 export const searchVideo = async (req, res) => {
+  let { videoName } = req.params;
   //   SELECT * FROM users
   //   let data = await model.users.findAll();
   //   findOne
-  let data = await prisma.users.findMany({
-    // where: {
-    //   user_id: 1,
-    // },
+
+  // SELECT * FROM video WHERE video_name LIKE '%videoName%'
+  let data = await prisma.video.findMany({
+    where: {
+      video_name: {
+        contains: videoName,
+      },
+    },
   });
-  res.send(data);
+  responseData(res, "success", data, 200);
 };
 
 export const getVideoPage = async (req, res) => {

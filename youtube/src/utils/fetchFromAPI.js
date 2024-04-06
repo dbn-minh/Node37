@@ -15,6 +15,14 @@ const options = {
   },
 };
 
+export const getSearchVideo = async (videoName) => {
+  const { data } = await axios.get(
+    `${BASE_URL}/video/search-video/${videoName}`,
+    options
+  );
+  return data.content;
+};
+
 export const fetchFromAPI = async (url) => {
   const { data } = await axios.get(`${BASE_URL}/${url}`, options);
 

@@ -1,0 +1,8 @@
+File from: [D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37/public/imgs/1712367432928_Ná»n mÃ u xanh cÃ³ máº·t trÄng.png]
+
+File to: [D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37/public/video/1712367432928_Ná»n mÃ u xanh cÃ³ máº·t trÄng.png]
+
+Compression algorithm: [pngquant]
+
+Description: Error: Command failed: D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37\node_modules\pngquant-bin\vendor\pngquant.exe --quality=20-50 -o D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37/public/video/1712367432928_Ná»n mÃ u xanh cÃ³ máº·t trÄng.png D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37/public/imgs/1712367432928_Ná»n mÃ u xanh cÃ³ máº·t trÄng.png
+  error: cannot open D:\Minh's Disk\Backend Course CyberSoft\node37 github\Node37\node37\public\imgs\1712367432928_Ná»n mÃ u xanh cÃ³ máº·t trÄng.png for reading

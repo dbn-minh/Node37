@@ -15,7 +15,7 @@ import { checkToken, verifyToken } from "../config/jwt.js";
 const videoRoute = express.Router();
 
 // API get video prisma
-videoRoute.get("/search-video", searchVideo);
+videoRoute.get("/search-video/:videoName", searchVideo);
 
 // Refresh Token => làm mới lại token
 
