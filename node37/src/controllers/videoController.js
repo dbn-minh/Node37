@@ -29,6 +29,11 @@ export const searchVideo = async (req, res) => {
       },
     },
   });
+
+  // prisma.video.create({data: {video_id, video_name, ...}}) <=> model.video.create({video_id, video_name, ...})
+  // prisma.video.update({data: {video_id, video_name, ...}, where: {}})
+  // prisma.video.delete({where}) <=>  model.video.destroy()
+
   responseData(res, "success", data, 200);
 };
 
