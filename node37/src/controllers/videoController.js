@@ -20,19 +20,30 @@ export const searchVideo = async (req, res) => {
   //   SELECT * FROM users
   //   let data = await model.users.findAll();
   //   findOne
+  //   [{user_id: 1, user_id: 1}]
 
   // SELECT * FROM video WHERE video_name LIKE '%videoName%'
-  let data = await prisma.video.findMany({
-    where: {
-      video_name: {
-        contains: videoName,
-      },
-    },
-  });
+  // let data = await prisma.video.findMany({
+  //   where: {
+  //     video_name: {
+  //       contains: videoName,
+  //     },
+  //   },
+  // });
 
   // prisma.video.create({data: {video_id, video_name, ...}}) <=> model.video.create({video_id, video_name, ...})
   // prisma.video.update({data: {video_id, video_name, ...}, where: {}})
   // prisma.video.delete({where}) <=>  model.video.destroy()
+
+  let data = await prisma.video.findMany({
+    include: {
+      video_comment: {
+        include: {
+          users: true,
+        },
+      },
+    },
+  });
 
   responseData(res, "success", data, 200);
 };

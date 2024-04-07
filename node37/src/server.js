@@ -9,6 +9,21 @@ app.use(cors());
 // middle ware định vị thư mục load tài nguyên
 app.use(express.static("."));
 
+// localhost:8181/api
+// graphql
+import { graphqlHTTP } from "express-graphql";
+
+app.use(
+  "/api",
+  graphqlHTTP({
+    rootValue: "",
+    schema: "",
+    graphiql: "",
+  })
+);
+
+// end graphql
+
 app.listen(8181);
 // localhost:8080/video/get-video
 app.use(rootRoute);
