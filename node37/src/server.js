@@ -9,16 +9,66 @@ app.use(cors());
 // middle ware định vị thư mục load tài nguyên
 app.use(express.static("."));
 
-// localhost:8181/api
 // graphql
 import { graphqlHTTP } from "express-graphql";
+import { buildSchema } from "graphql";
 
+// muốn ko null thì thêm chấm thang
+// [{productId, productName}, {productId, productName}, {productId, productName}]
+// ["xyz", "abc"]
+// [2, 5, 6, 2]
+
+let schemaGraphql = buildSchema(`
+  type User {
+    id: ID
+    userName: String
+    email: [String]
+    product: [Product]
+  }
+
+  type Product {
+    productId: ID
+    productName: String
+  }
+
+  type RootQuery {
+    getUser: String
+  }
+
+  type RootMutation {
+    createUser: String
+  }
+
+  schema {
+    query: RootQuery
+    mutation: RootMutation
+  }
+
+`);
+
+let resolver = {
+  getUser: () => {
+    return {
+      id: 1,
+      userName: "abc",
+      age: 2,
+      email: "abc@gmail.com",
+      product: {
+        productId: 1,
+        productName: "sp 1",
+      },
+    };
+  },
+  createUser: () => {},
+};
+
+// localhost:8181/api
 app.use(
   "/api",
   graphqlHTTP({
-    rootValue: "",
-    schema: "",
-    graphiql: "",
+    schema: schemaGraphql, // nơi khai báo đối tượng (tên model, tên hàm)
+    rootValue: resolver, // gán dữ liệu vào các hàm được khai báo ở schema
+    graphiql: true,
   })
 );
 
