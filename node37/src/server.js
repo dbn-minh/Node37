@@ -20,19 +20,44 @@ import { buildSchema } from "graphql";
 
 let schemaGraphql = buildSchema(`
   type User {
-    id: ID
-    userName: String
-    email: [String]
-    product: [Product]
+    user_id: ID
+    full_name: String
+    email: String
+    avatar: String
+    pass_word: String
+    face_app_id: String
+    role: String
+    refresh_token: String
+  }
+  
+  type VideoType {
+    type_id: ID
+    type_name: String
+    icon: String
   }
 
   type Product {
     productId: ID
     productName: String
+  } 
+
+  type Video{
+    video_id:      ID
+    video_name:    String
+    thumbnail:     String
+    description:   String
+    views:         Int
+    source:        String
+    user_id:       Int
+    type_id:       Int
+    users: User
+    video_type: VideoType
   }
 
   type RootQuery {
-    getUser: String
+    getUser: User
+    getUserId( userId: Int ): User
+    getVideo: [Video]
   }
 
   type RootMutation {
@@ -46,18 +71,48 @@ let schemaGraphql = buildSchema(`
 
 `);
 
+import { PrismaClient } from "@prisma/client";
+let prisma = new PrismaClient();
+
 let resolver = {
+  getVideo: async () => {
+    let data = await prisma.video.findMany({
+      include: {
+        users: true,
+        video_type: true,
+      },
+    });
+    return data;
+  },
   getUser: () => {
-    return {
+    let data = {
       id: 1,
       userName: "abc",
       age: 2,
       email: "abc@gmail.com",
-      product: {
-        productId: 1,
-        productName: "sp 1",
-      },
+      product: [
+        {
+          productId: 1,
+          productName: "sp 1",
+        },
+      ],
     };
+    return data;
+  },
+  getuserId: ({ userId }) => {
+    let data = {
+      id: userId,
+      userName: "abc",
+      age: 2,
+      email: "abc@gmail.com",
+      product: [
+        {
+          productId: 1,
+          productName: "sp 1",
+        },
+      ],
+    };
+    return data;
   },
   createUser: () => {},
 };

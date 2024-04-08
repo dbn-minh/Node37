@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Typography, Box } from "@mui/material";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 import { fetchFromAPI, getSearchVideo } from "../utils/fetchFromAPI";
 import { Videos } from "./";
@@ -10,11 +11,46 @@ const SearchFeed = () => {
   const { searchTerm } = useParams();
 
   useEffect(() => {
-    getSearchVideo(searchTerm)
+    getSearchVideo(searchTerm).then((result) => {
+      setVideos(result);
+    });
+
+    let query = {
+      query: `query{
+        getVideo {
+          video_id
+          video_name
+          thumbnail
+          description
+          views
+          source
+          user_id
+          type_id
+          users {
+            user_id
+            full_name
+            email
+            avatar
+            pass_word
+            face_app_id
+            role
+            refresh_token
+          }
+          video_type {
+            type_id
+            type_name
+            icon
+          }
+        } 
+      }`,
+      variable: {},
+    };
+    axios
+      .post("http://localhost:8181/api", query)
       .then((result) => {
-        setVideos(result);
+        console.log(result);
       })
-      .catch();
+      .catch((error) => console.log(error));
   }, [searchTerm]);
 
   return (
