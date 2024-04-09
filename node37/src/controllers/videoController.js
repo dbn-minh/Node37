@@ -13,6 +13,7 @@ let Op = Sequelize.Op;
 
 //prisma
 import { PrismaClient } from "@prisma/client";
+import { io } from "../server.js";
 let prisma = new PrismaClient();
 
 export const searchVideo = async (req, res) => {
@@ -31,7 +32,7 @@ export const searchVideo = async (req, res) => {
   //   },
   // });
 
-  // prisma.video.create({data: {video_id, video_name, ...}}) <=> model.video.create({video_id, video_name, ...})
+  // prisma.video.create({data: {video_id, video_name, ...}}) <=> modyarnel.video.create({video_id, video_name, ...})
   // prisma.video.update({data: {video_id, video_name, ...}, where: {}})
   // prisma.video.delete({where}) <=>  model.video.destroy()
 
@@ -190,6 +191,15 @@ export const commentVideo = async (req, res) => {
     };
 
     await model.video_comment.create(newData);
+
+    let data = await model.video_comment.findAll({
+      where: {
+        video_id,
+      },
+      include: ["user"],
+    });
+
+    io.emit("new-data-comment", data);
 
     responseData(res, "Thành công", "", 200);
   } catch {
